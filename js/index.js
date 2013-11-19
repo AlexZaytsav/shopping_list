@@ -1,5 +1,9 @@
 (function ($) {
 
+    Backbone.sync = function(method, model, success, error){
+        success();
+    }
+
     var Item = Backbone.Model.extend({
 
         defaults: function () {
@@ -18,17 +22,34 @@
 
     var ItemView = Backbone.View.extend({
 
-        el: 'body', // name of (orphan) root tag in this.el
+        tagName: 'tr', // name of (orphan) root tag in this.el
+
+        events: {
+            'click a.delete': 'remove'
+        },
 
         initialize: function () {
-            _.bindAll(this, 'render'); // every function that uses 'this' as the current object should be in here
+            _.bindAll(this, 'render', 'unrender', 'remove'); // every function that uses 'this' as the current object should be in here
+
+            this.model.bind('change', this.render);
+            this.model.bind('remove', this.unrender);
         },
+
         render: function () {
-            $(this.el).find('#item_list').append("<tr><td>" + this.model.get('name') + "</td>" +
+            $(this.el).html("<td>" + this.model.get('name') + "</td>" +
                 "<td>" + this.model.get('price') + "</td>" +
                 "<td>" + this.model.get('purchase_date') + "</td>" +
-                "<td>" + this.model.get('expiration_date') + "</td></tr>");
+                "<td>" + this.model.get('expiration_date') + "</td>"+
+                "<td><a href='#' class='delete'><i class='fa fa-trash-o fa-2'></i></a></td>");
             return this; // for chainable calls, like .render().el
+        },
+
+        unrender: function(){
+            $(this.el).remove();
+        },
+
+        remove: function(){
+            this.model.destroy();
         }
     });
 
@@ -74,7 +95,7 @@
                 model: item
             });
 
-            $(this.el).append(itemView.render().el)
+            $(this.el).find('#item_list').append(itemView.render().el)
         }
 
 
