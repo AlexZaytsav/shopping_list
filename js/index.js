@@ -1,8 +1,17 @@
 (function ($) {
 
-    Backbone.sync = function(method, model, success, error){
-        success();
-    }
+    define("items-backbone", ["localstorage"], function() {
+        var SomeCollection = Backbone.Collection.extend({
+            localStorage: new Backbone.LocalStorage("items-backbone") // Unique name within your app.
+        });
+
+        return new SomeCollection();
+    });
+
+    require(["items-backbone"], function(someCollection) {
+        // ready to use someCollection
+    });
+
 
     var Item = Backbone.Model.extend({
 
@@ -17,7 +26,10 @@
     });
 
     var List = Backbone.Collection.extend({
-        model: Item
+        model: Item//,
+
+        //localStorage: new Backbone.LocalStorage("items-backbone")
+
     });
 
     var ItemView = Backbone.View.extend({
@@ -38,7 +50,7 @@
         render: function () {
             $(this.el).html("<td>" + this.model.get('name') + "</td>" +
                 "<td>" + this.model.get('price') + "</td>" +
-                "<td>" + this.model.get('purchase_date') + "</td>" +
+                "<td>" + jQuery.timeago(this.model.get('purchase_date')) + "</td>" +
                 "<td>" + this.model.get('expiration_date') + "</td>"+
                 "<td><a href='#' class='delete'><i class='fa fa-trash-o fa-2'></i></a></td>");
             return this; // for chainable calls, like .render().el
@@ -83,7 +95,7 @@
             item.set({
                 name: item.get('name'), // modify item defaults
                 price: item.get('price'),
-                purchase_date: item.get('purchase_date'),
+                purchase_date: new Date(),
                 expiration_date: item.get('expiration_date')
             });
 
