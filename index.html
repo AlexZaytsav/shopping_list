@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/foundation.css">
   <link rel="stylesheet" href="css/style.css">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/jquery-ui-1.10.3.custom.min.css">
 
   <script src="js/vendor/custom.modernizr.js"></script>
   <script src="js/vendor/jquery.js"></script>
@@ -19,7 +20,7 @@
   <script src="js/vendor/underscore-min.js"></script>
   <script src="js/vendor/backbone.js"></script>
   <script src="js/vendor/backbone.localeStorage.js"></script>
-  <script src="js/vendor/require.js"></script>
+  <script src="js/vendor/jquery-ui-1.10.3.custom.min.js"></script>
 
 </head>
 <body>
@@ -29,15 +30,43 @@
 			<h1>Список продуктов</h1>
 		</div>
         <div class="large-4 columns" style="padding-top: 20px">
-            <a id="add_item" class="button size" >Добавить покупку</a>
+            <a id="add_item" class="button" >Добавить покупку</a>
         </div>
         <hr />
 	</div>
 
-    <div class="row" id="adding">
-        <div class="large-12 columns">
-
+    <div class="row" id="editing">
+        <div class="row">
+            <div class="large-8 columns">
+                <h2>Редактирование покупки</h2>
+            </div>
+            <div class="large-4 columns" style="padding-top: 20px">
+                <a id="save_item" class="button success" >Сохранить покупку</a>
+            </div>
         </div>
+
+
+        <div class="large-3 columns">
+            <label>Название</label>
+            <input id="name" type="text">
+        </div>
+
+        <div class="large-3 columns">
+            <label>Цена</label>
+            <input id="price" type="text">
+        </div>
+
+        <div class="large-3 columns">
+            <label>Дата покупки</label>
+            <input id="purchase_date" type="text">
+        </div>
+
+        <div class="large-3 columns">
+            <label>Срок годности(дней)</label>
+            <input id="expiration_date" type="number" min="1">
+        </div>
+
+        <hr />
     </div>
 
 

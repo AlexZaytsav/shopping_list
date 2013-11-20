@@ -1,5 +1,29 @@
 (function ($) {
 
+    $.datepicker.regional['ru'] = {
+        closeText: 'Закрыть',
+        prevText: '&#x3c;Пред',
+        nextText: 'След&#x3e;',
+        currentText: 'Сегодня',
+        monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+        monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн','Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+        dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+        dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+        dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+        weekHeader: 'Не',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''};
+    $.datepicker.setDefaults($.datepicker.regional['ru']);
+
+    $("#purchase_date").datepicker({
+        defaultDate: new Date(),
+        maxDate: new Date()
+    });
+
+
     var Item = Backbone.Model.extend({
 
         defaults: function () {
@@ -17,6 +41,7 @@
         tagName: 'tr', // name of (orphan) root tag in this.el
 
         events: {
+            'click a.edit': 'edit',
             'click a.delete': 'remove'
         },
 
@@ -32,7 +57,8 @@
                 "<td>" + this.model.get('price') + "</td>" +
                 "<td>" + jQuery.timeago(this.model.get('purchase_date')) + "</td>" +
                 "<td>" + this.model.get('expiration_date') + "</td>" +
-                "<td><a href='#' class='delete'><i class='fa fa-trash-o fa-2'></i></a></td>");
+                "<td><a href='#' class='edit'><i class='fa fa-pencil-square-o fa-2'></i></a>" +
+                "<a href='#' class='delete'><i class='fa fa-trash-o fa-2'></i></a></td>");
             return this; // for chainable calls, like .render().el
         },
 
@@ -42,6 +68,12 @@
 
         remove: function () {
             this.model.destroy();
+        },
+
+        edit: function () {
+            for(attr in this.model.attributes){
+                $('#' + attr).val(this.model.attributes[attr]);
+            }
         }
     });
 
@@ -56,7 +88,8 @@
         el: 'body', // attaches `this.el` to an existing element.
 
         events: {
-            'click a#add_item': 'addItem'
+            'click a#add_item': 'addItem',
+            'click a#save_item': 'addItem'
         },
 
         initialize: function () {

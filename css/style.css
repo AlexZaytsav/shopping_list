@@ -3,6 +3,15 @@ td {
     font-family: museo-slab,Georgia,"Times New Roman",Times,serif;
 }
 
+.row .row{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.button {
+    width: 210px;
+}
+
 .fa-2{font-size:2em}
 .fa-3{font-size:4em}
 .fa-4{font-size:7em}
