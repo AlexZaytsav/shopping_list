@@ -1,18 +1,5 @@
 (function ($) {
 
-    define("items-backbone", ["localstorage"], function() {
-        var SomeCollection = Backbone.Collection.extend({
-            localStorage: new Backbone.LocalStorage("items-backbone") // Unique name within your app.
-        });
-
-        return new SomeCollection();
-    });
-
-    require(["items-backbone"], function(someCollection) {
-        // ready to use someCollection
-    });
-
-
     var Item = Backbone.Model.extend({
 
         defaults: function () {
@@ -23,13 +10,6 @@
                 expiration_date: 'empty date'
             }
         }
-    });
-
-    var List = Backbone.Collection.extend({
-        model: Item//,
-
-        //localStorage: new Backbone.LocalStorage("items-backbone")
-
     });
 
     var ItemView = Backbone.View.extend({
@@ -51,18 +31,25 @@
             $(this.el).html("<td>" + this.model.get('name') + "</td>" +
                 "<td>" + this.model.get('price') + "</td>" +
                 "<td>" + jQuery.timeago(this.model.get('purchase_date')) + "</td>" +
-                "<td>" + this.model.get('expiration_date') + "</td>"+
+                "<td>" + this.model.get('expiration_date') + "</td>" +
                 "<td><a href='#' class='delete'><i class='fa fa-trash-o fa-2'></i></a></td>");
             return this; // for chainable calls, like .render().el
         },
 
-        unrender: function(){
+        unrender: function () {
             $(this.el).remove();
         },
 
-        remove: function(){
+        remove: function () {
             this.model.destroy();
         }
+    });
+
+    var List = Backbone.Collection.extend({
+        model: Item,
+
+        localStorage: new Backbone.LocalStorage("items-backbone")
+
     });
 
     var ListView = Backbone.View.extend({
@@ -77,8 +64,8 @@
 
             this.collection = new List();
             this.collection.bind('add', this.appendItem); // collection event binder
+            this.collection.fetch();
 
-            this.render(); // not all views are self-rendering. This one is.
         },
 
         render: function () {
@@ -100,6 +87,7 @@
             });
 
             this.collection.add(item); // add item to collection; view is updated via event 'add'
+            item.save();
         },
 
         appendItem: function (item) {
