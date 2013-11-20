@@ -6,12 +6,12 @@
         nextText: 'След&#x3e;',
         currentText: 'Сегодня',
         monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-        monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн','Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+        monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
         dayNames: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
         dayNamesShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
         dayNamesMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
         weekHeader: 'Не',
-        dateFormat: 'dd/mm/yy',
+        dateFormat: 'yy/mm/dd',
         firstDay: 1,
         isRTL: false,
         showMonthAfterYear: false,
@@ -31,7 +31,7 @@
                 name: 'empty name',
                 price: 'empty price',
                 purchase_date: 'empty date',
-                expiration_date: 'empty date'
+                expiration_date: '0'
             }
         }
     });
@@ -71,17 +71,16 @@
         },
 
         edit: function () {
-            for(attr in this.model.attributes){
+            for (attr in this.model.attributes) {
                 $('#' + attr).val(this.model.attributes[attr]);
+                console.log(attr);
             }
         }
     });
 
     var List = Backbone.Collection.extend({
         model: Item,
-
         localStorage: new Backbone.LocalStorage("items-backbone")
-
     });
 
     var ListView = Backbone.View.extend({
@@ -89,11 +88,11 @@
 
         events: {
             'click a#add_item': 'addItem',
-            'click a#save_item': 'addItem'
+            'click a#save_item': 'saveItem'
         },
 
         initialize: function () {
-            _.bindAll(this, 'render', 'addItem', 'appendItem'); // fixes loss of context for 'this' within methods
+            _.bindAll(this, 'render', 'saveItem', 'appendItem'); // fixes loss of context for 'this' within methods
 
             this.collection = new List();
             this.collection.bind('add', this.appendItem); // collection event binder
@@ -119,7 +118,26 @@
                 expiration_date: item.get('expiration_date')
             });
 
-            this.collection.add(item); // add item to collection; view is updated via event 'add'
+            for (attr in item.attributes) {
+                $('#' + attr).val(item.attributes[attr]);
+            }
+
+        },
+
+        saveItem: function () {
+            if (this.collection.get($('#id').val()))
+                var item = this.collection.get($('#id').val());
+            else
+                var item = new Item();
+
+            item.set({
+                name: $('#name').val(), // modify item defaults
+                price: $('#price').val(),
+                purchase_date: $('#purchase_date').val(),
+                expiration_date: $('#expiration_date').val()
+            });
+
+            this.collection.add(item);
             item.save();
         },
 
